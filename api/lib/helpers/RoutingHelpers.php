@@ -19,15 +19,6 @@ class RoutingHelpers {
     return $controllers;
   }
 
-  public static function getControllerMethods($controller) {
-    try {
-      $class = new ReflectionClass($controller);
-      return $class->getMethods();
-    } catch (\ReflectionException $e) {
-      return $e->getMessage();
-    }
-  }
-
   public static function set404() {
     header('HTTP/1.1 404 Not Found');
     header('Content-Type: application/json');
