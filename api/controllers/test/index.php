@@ -32,7 +32,7 @@ foreach ($methods as $item) {
           }
         }
 
-        echo $reflectionMethod->invoke($reflector->newInstance());
+        echo $reflectionMethod->invoke($reflector->newInstance(), $_REQUEST);
       }
     }
   }
