@@ -5,8 +5,15 @@ use helpers\CheckProtectedAttribute;
 class TestController {
 
   #[CheckProtectedAttribute('true')]
-  public function get() {
-    echo 'ciao!';
+  public function blocked() {
+    $array = array(
+        array(
+            'key1' => 'val1',
+            'key2' => array('val2', 'val3')
+        )
+    );
+
+    return json_encode($array);
   }
 
   #[CheckProtectedAttribute('false')]

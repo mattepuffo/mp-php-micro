@@ -12,7 +12,7 @@ function sendCorsHeaders() {
   header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 }
 
-//sendCorsHeaders();
+sendCorsHeaders();
 
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 
@@ -31,11 +31,15 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
 $jwtHelpers = new JwtHelpers();
 
 $controller = $_REQUEST['controller'];
+$is404 = true;
 foreach (RoutingHelpers::getControllers() as $item) {
   if ($item == $controller) {
-    include_once "controller/$item/index.php";
+    $is404 = false;
+    include_once "controllers/$item/index.php";
     break;
   }
+}
 
+if ($is404) {
   echo RoutingHelpers::set404();
 }

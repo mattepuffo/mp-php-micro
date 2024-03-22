@@ -2,13 +2,11 @@
 
 namespace helpers;
 
-use ReflectionClass;
-
 class RoutingHelpers {
 
   public static function getControllers() {
     $root = realpath($_SERVER["DOCUMENT_ROOT"]);
-    $dir = "$root/api/controller/";
+    $dir = "$root/api/controllers/";
     $dirs = scandir($dir);
     $controllers = array();
     foreach ($dirs as $controller) {
