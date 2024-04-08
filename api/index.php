@@ -14,12 +14,7 @@ function sendCorsHeaders() {
 
 sendCorsHeaders();
 
-$root = realpath($_SERVER["DOCUMENT_ROOT"]);
-
-include_once "$root/api/lib/vendor/autoload.php";
-include_once "$root/api/lib/config/MyEnv.php";
-include_once "$root/api/lib/helpers/RoutingHelpers.php";
-include_once "$root/api/lib/helpers/JwtHelpers.php";
+require_once __DIR__ . "/lib/vendor/autoload.php";
 
 (new MyEnv(__DIR__ . '/.env'))->load();
 
