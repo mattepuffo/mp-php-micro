@@ -3,6 +3,10 @@
 use helpers\JwtHelpers;
 
 include_once 'TestController.php';
+include_once __DIR__ . "/lib/vendor/autoload.php";
+include_once __DIR__ . "/lib/helpers/JwtHelpers.php";
+include_once __DIR__ . "/lib/helpers/RoutingHelpers.php";
+
 
 $testController = new TestController();
 $jwtHelpers = new JwtHelpers();

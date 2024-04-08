@@ -14,7 +14,10 @@ function sendCorsHeaders() {
 
 sendCorsHeaders();
 
-require_once __DIR__ . "/lib/vendor/autoload.php";
+include_once __DIR__ . "/lib/vendor/autoload.php";
+include_once __DIR__ . "/lib/config/MyEnv.php";
+include_once __DIR__ . "/lib/helpers/RoutingHelpers.php";
+include_once __DIR__ . "/lib/helpers/JwtHelpers.php";
 
 (new MyEnv(__DIR__ . '/.env'))->load();
 
