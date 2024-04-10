@@ -1,6 +1,7 @@
 <?php
 
 use helpers\JwtHelpers;
+use helpers\RoutingHelpers;
 
 include_once 'TestController.php';
 include_once __DIR__ . "/lib/vendor/autoload.php";
