@@ -6,7 +6,7 @@ class TestController {
 
   #[CheckProtectedAttribute('false')]
   public function get($args) {
-    return $args;
+    return json_encode($args);
   }
 
   #[CheckProtectedAttribute('false')]

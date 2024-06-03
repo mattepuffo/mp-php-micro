@@ -28,7 +28,7 @@ class JwtHelpers {
 
     if ($jwt) {
       $token = JWT::decode($jwt, new Key(getenv('GLOBAL_SECRET_KEY'), 'HS256'));
-      $now = new DateTimeImmutable();
+      $now = new \DateTimeImmutable();
 
       if ($token->iss !== getenv('SERVER_NAME') || $token->nbf > $now->getTimestamp() || $token->exp < $now->getTimestamp()) {
         return false;

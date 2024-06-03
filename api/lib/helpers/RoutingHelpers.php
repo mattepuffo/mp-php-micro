@@ -17,6 +17,38 @@ class RoutingHelpers {
     return $controllers;
   }
 
+  public static function getRoute($controllerNome, $method) {
+    $jwtHelpers = new JwtHelpers();
+    $is404 = true;
+
+    $reflector = new \ReflectionClass($controllerNome);
+    $methods = $reflector->getMethods();
+    foreach ($methods as $item) {
+      foreach ($item->getAttributes() as $attr) {
+        $reflectionMethod = new \ReflectionMethod($controllerNome, $item->getName());
+
+        if ($method == $item->getName()) {
+          $is404 = false;
+          foreach ($attr->getArguments() as $arg) {
+            if ($arg === 'true') {
+              $checkToken = $jwtHelpers->checkToken($_SERVER['HTTP_AUTHORIZATION']);
+              if (!$checkToken) {
+                return $jwtHelpers->erroMessage();
+//                exit();
+              }
+            }
+
+            return $reflectionMethod->invoke($reflector->newInstance(), $_REQUEST);
+          }
+        }
+      }
+    }
+
+    if ($is404) {
+      return RoutingHelpers::set404();
+    }
+  }
+
   public static function set404() {
     header('HTTP/1.1 404 Not Found');
     header('Content-Type: application/json');
