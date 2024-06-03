@@ -6,7 +6,7 @@ class RoutingHelpers {
 
   public static function getControllers() {
     $root = realpath($_SERVER["DOCUMENT_ROOT"]);
-    $dir = "$root/mp-php-micro/api/controllers/";
+    $dir = "$root/" . getenv('CONTROLLERS_DIR');
     $dirs = scandir($dir);
     $controllers = array();
     foreach ($dirs as $controller) {
