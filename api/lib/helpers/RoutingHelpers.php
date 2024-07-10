@@ -17,6 +17,16 @@ class RoutingHelpers {
     return $controllers;
   }
 
+  public static function cleanController($nome) {
+    $separator = str_contains($nome, '-') ? '-' : '_';
+    $explode = explode($separator, $nome);
+    $nome = '';
+    foreach ($explode as $part) {
+      $nome .= ucfirst($part);
+    }
+    return $nome . 'Controller';
+  }
+
   public static function getRoute($controllerNome, $method) {
     $jwtHelpers = new JwtHelpers();
     $is404 = true;
