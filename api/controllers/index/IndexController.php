@@ -9,7 +9,7 @@ class IndexController {
 
   public function __construct() {}
 
-  #[CheckProtectedAttribute('false')]
+  #[CheckProtectedAttribute('true')]
   public function get($args): false|string {
     return json_encode(array('Versione framework' => getenv('FRAMEWORK_VERSION')));
   }

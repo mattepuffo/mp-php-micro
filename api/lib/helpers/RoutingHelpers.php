@@ -4,7 +4,7 @@ namespace helpers;
 
 class RoutingHelpers {
 
-  public static function getControllers() {
+  public static function getControllers(): array {
     $root = realpath($_SERVER["DOCUMENT_ROOT"]);
     $dir = "$root/" . getenv('CONTROLLERS_DIR');
     $dirs = scandir($dir);
@@ -17,7 +17,7 @@ class RoutingHelpers {
     return $controllers;
   }
 
-  public static function cleanController($nome) {
+  public static function cleanController($nome): string {
     $separator = str_contains($nome, '-') ? '-' : '_';
     $explode = explode($separator, $nome);
     $nome = '';
@@ -59,7 +59,7 @@ class RoutingHelpers {
     }
   }
 
-  public static function set404() {
+  public static function set404(): false|string {
     header('HTTP/1.1 404 Not Found');
     header('Content-Type: application/json');
 

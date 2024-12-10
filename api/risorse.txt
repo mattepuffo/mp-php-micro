@@ -8,3 +8,5 @@ error_reporting(~0);
 ini_set('display_errors', 1);
 
 composer dump-autoload
+
+php -S localhost:8000

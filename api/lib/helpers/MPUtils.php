@@ -1,62 +1,36 @@
 <?php
 
-namespace helpers;
-use stirng;
-use xml;
-
 /**
  * Metodi di utilità
  *
  * @author Matteo Ferrone
- * @since 2022-01-21
- * @version 2.7.8
+ * @since 2024-06-28
+ * @version 2.8.1
  */
 class MPUtils {
 
-  /**
-   * Ripulisce la stringa
-   *
-   * @param string $name Stringa da ripulire
-   * @return string La stringa ripulita
-   */
-  public function sanitizeName($name) {
+  public function sanitizeName($name): array|string {
     $cerca = array("à", "è", "é", "ì", "ò", "ù", "'", "?", " ", "__", "&", "%", "#", "(", ")", "/", "+", "°");
-    $sostituisci = array("a", "e", "e", "i", "o", "u", "-", "-", "-", "-", "e", "-per-cento-", "-", "-", "-", "-", "_", "_");
-    return str_replace($cerca, $sostituisci, trim(strtolower($name)));
+    $sostituisci = array("a", "e", "e", "i", "o", "u", "-", "-", "-", "-", "e", "-per-cento-", "-", "", "", "-", "_", "_");
+    $doppioMeno = array("---");
+    $sostDoppioMeno = array("-");
+    $newString = str_replace($cerca, $sostituisci, trim(strtolower($name)));
+    return str_replace($doppioMeno, $sostDoppioMeno, trim(strtolower($newString)));
   }
 
-  /**
-   * Riporta la stringa in versione "human"
-   *
-   * @param string $name Stringa da "ricostruire"
-   * @return string Stringa "ricostruita"
-   */
-  public function unSanitizeName($name) {
+  public function unSanitizeName($name): array|string {
     $cerca = array("-", "_");
     $sostituisci = array(' ', ' ');
     return str_replace($cerca, $sostituisci, trim($name));
   }
 
-  /**
-   * Leva alcune parole dal testo
-   *
-   * @param string $testo Testo da ripulire
-   * @return string Testo ripulito
-   */
-  public function levaParolacce($testo) {
+  public function levaParolacce($testo): array|string {
     $cerca = array("stronz", "merd", "cacca", "porc", "vaffanculo", "cul", "cazz", "figa", "fottere", "scopare",
         "idiot", "scem", "cretin", "deficent", "deficient", "imbecill", "pisci", "pisciare", "smerdare", "fottiti",
         "fottut", "trombare", "porko", "cornut", "troi", "puttan", "zoccol", "fregn", "suca", "minchi");
     return str_replace($cerca, "***", $testo);
   }
 
-  /**
-   * Tronca il testo
-   *
-   * @param string $testo Testo da ripulire
-   * @param int $caratteri Caratteri a cui troncare il testo
-   * @return string Testo troncato
-   */
   public function troncaTesto($testo, $caratteri = 300) {
     if (strlen($testo) <= $caratteri) {
       return $testo;
@@ -70,24 +44,12 @@ class MPUtils {
     return $nuovoTesto;
   }
 
-  /**
-   * Riempie un file
-   *
-   * @param string $file File da scrivere
-   * @param string $message Messaggio da scrivere
-   */
   public function scriviTesto($file, $message) {
     $f = fopen($file, 'a+');
     fwrite($f, $message);
     fclose($f);
   }
 
-  /**
-   * Controlla validità struttura email
-   *
-   * @param string $email Email da controllare
-   * @return boolean TRUE o FALSE a seconda che l'email sia valida o meno
-   */
   public function chkEmail($email) {
     $email = trim($email);
     if (!$email) {
@@ -106,16 +68,6 @@ class MPUtils {
     return true;
   }
 
-  /**
-   * Elabora il number format
-   *
-   * @param int $number Numero da formattare
-   * @param int $decimals Numero di decimali
-   * @param string $decimalPoint Punteggiatura decimali
-   * @param string $thousandPoint Punteggiatura migliaia
-   * @return int Numero formattato
-   * @deprecated since version number 2.0
-   */
   public function truncateNumberFormat($number, $decimals = 2, $decimalPoint = ',', $thousandPoint = '.') {
     if (($number * pow(10, $decimals + 1) % 10) == 5) {
       $number -= pow(10, -($decimals + 1));
@@ -123,13 +75,6 @@ class MPUtils {
     return number_format($number, $decimals, $decimalPoint, $thousandPoint);
   }
 
-  /**
-   * Lista di anni
-   *
-   * @param int $annoStart Anno di inizio
-   * @param int $annoEnd Anno di fine
-   * @return array Lista di anni
-   */
   public function listaAnni($annoStart, $annoEnd) {
     $arrAnni = array();
     for ($i = $annoStart; $i <= $annoEnd; $i++) {
@@ -139,12 +84,6 @@ class MPUtils {
     return $arrAnni;
   }
 
-  /**
-   * Parsing di XML in formato JSON
-   *
-   * @param stirng $file File da parsare
-   * @return string Stringa JSON
-   */
   public function parseXml($file) {
     $fileContents = file_get_contents($file);
     $fileContents = str_replace(array("\n", "\r", "\t"), '', $fileContents);
@@ -154,46 +93,18 @@ class MPUtils {
     return $json;
   }
 
-  /**
-   * Compara le classi passate come parametri
-   *
-   * @param class $objA
-   * @param class $objB
-   * @return mixed
-   */
   public function sortObject($objA, $objB) {
     return strcmp($objA->__toString(), $objB->__toString());
   }
 
-  /**
-   * Converte le new line nel tag br
-   *
-   * @param string $text Testo da modificare
-   * @return string Testo modificato
-   */
   public function ln2br($text) {
     return strtr($text, array("\r\n" => '<br />', "\r" => '<br />', "\n" => '<br />'));
   }
 
-  /**
-   * Ritorna il valore di usando la classica operazione
-   * $a : $b = $c : X
-   *
-   * @param float $a
-   * @param float $b
-   * @param float $c
-   * @return float
-   */
   public function getProportionValue($a, $b, $c) {
     return (float)((float)($b * $c) / $a);
   }
 
-  /**
-   * Converte una pagina HTML in puro testo
-   *
-   * @param string $string Testo HTML
-   * @return string Testo convertito
-   */
   public function htmlToText($string) {
     $search = array(
         "'<script[^>]*?>.*?</script>'si",
@@ -237,24 +148,12 @@ class MPUtils {
     return $text;
   }
 
-  /**
-   * Controlla se l'encoding è UTF-8
-   *
-   * @param string $text Testo da controllare
-   * @return string Il tipo di encoding
-   */
   public function isUTF8($text) {
     $res = mb_detect_encoding($text);
     return $res == "UTF-8" || $res == "ASCII";
   }
 
-  /**
-   * Tenta di chiudere tutti i tag HTML non chiusi
-   *
-   * @param string $unclosedString Testo HTML da controllare
-   * @return string Testo modificato
-   */
-  public function closeUnclosedTags($unclosedString) {
+  public function closeUnclosedTags($unclosedString): string {
     preg_match_all("/<([^\/]\w*)>/", $closedString = $unclosedString, $tags);
     for ($i = count($tags[1]) - 1; $i >= 0; $i--) {
       $tag = $tags[1][$i];
@@ -265,21 +164,11 @@ class MPUtils {
     return $closedString;
   }
 
-  /**
-   * @param $amount
-   * @param int $vatPercent
-   * @return float|int
-   */
-  public function vatGetValue($amount, $vatPercent = 22) {
+  public function vatGetValue($amount, $vatPercent = 22): float|int {
     return ($amount * $vatPercent) / 100;
   }
 
-  /**
-   * Usando Javascript, chiude la finestra corrente, ed eventualmente la riapre
-   *
-   * @param boolean $reloadOpener Se deve riaprire la finestra
-   */
-  public function windowClose($reloadOpener = false) {
+  public function windowClose($reloadOpener = false): void {
     if (!$reloadOpener) {
       echo "<script  type=\"text/javascript\" >\nwindow.self.close()\n</script>\n";
     } else {
@@ -287,27 +176,15 @@ class MPUtils {
     }
   }
 
-  /**
-   * Converte un array in XML
-   *
-   * ESEMPIO:
-   * $xml = new SimpleXMLElement('<root/>');
-   * arrayToXml($array, $xml);
-   * $xml->asXML($nomeFile);
-   *
-   * @param array $array
-   * @param xml object $xml
-   * @since 2.2
-   */
-  public function arrayToXml($array, &$xml) {
+  public function arrayToXml($array, &$xml): void {
     foreach ($array as $key => $value) {
       if (is_array($value)) {
         if (!is_numeric($key)) {
           $subnode = $xml->addChild("$key");
-          arrayToXml($value, $subnode);
+          $this->arrayToXml($value, $subnode);
         } else {
           $subnode = $xml->addChild("item$key");
-          arrayToXml($value, $subnode);
+          $this->arrayToXml($value, $subnode);
         }
       } else {
         $xml->addChild("$key", htmlspecialchars("$value"));
@@ -315,14 +192,17 @@ class MPUtils {
     }
   }
 
-  /**
-   * Converte un array in CSV
-   *
-   * @param array $array
-   * @param string $csvFile
-   * @since 2.2
-   */
-  public function arrayToCsv($array, $csvFile) {
+  public function toXmlWithPrefix($node, $array, $prefix = ''): void {
+    foreach ($array as $key => $value) {
+      if (is_array($value)) {
+        $this->toXmlWithPrefix($node->addChild(is_numeric($key) ? 'item' : $key), $value);
+      } else {
+        $node->addChild($key, $value);
+      }
+    }
+  }
+
+  public function arrayToCsv($array, $csvFile): void {
     $f = fopen($csvFile, 'w');
     foreach ($array as $row) {
       fputcsv($f, $row, ';');
@@ -330,14 +210,7 @@ class MPUtils {
     fclose($f);
   }
 
-  /**
-   * Crea un file csv e lo metto in download
-   *
-   * @param $array
-   * @param string $filename
-   * @param string $delimiter
-   */
-  function downloadCsv($array, $filename = "export.csv", $delimiter = ";") {
+  function downloadCsv($array, $filename = "export.csv", $delimiter = ";"): void {
     $f = fopen('php://memory', 'w');
     foreach ($array as $line) {
       fputcsv($f, $line, $delimiter);
@@ -348,13 +221,7 @@ class MPUtils {
     fpassthru($f);
   }
 
-  /**
-   * Genera un colore random
-   *
-   * @return string
-   * @since 2.3
-   */
-  public function generateColor() {
+  public function generateColor(): string {
     mt_srand((double)microtime() * 1000000);
     $colorCode = '';
     while (strlen($colorCode) < 6) {
@@ -363,13 +230,7 @@ class MPUtils {
     return '#' . $colorCode;
   }
 
-  /**
-   * Calcola il numero di giorni in un anno
-   *
-   * @param $year
-   * @return int
-   */
-  public function daysInYear($year) {
+  public function daysInYear($year): int {
     $days = 0;
     for ($month = 1; $month <= 12; $month++) {
       $days = $days + cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -377,12 +238,7 @@ class MPUtils {
     return $days;
   }
 
-  /**
-   * @param $monthNumber
-   * @return string
-   * @since 2.7.2
-   */
-  public function getMonthName($monthNumber) {
+  public function getMonthName($monthNumber): string {
     $arrayMonths = array(
         1 => 'Gennaio',
         2 => 'Febbraio',
@@ -400,34 +256,14 @@ class MPUtils {
     return $arrayMonths[$monthNumber];
   }
 
-  /**
-   * Calcola la differenza in giorni tra due date
-   *
-   * Esempio:
-   * echo $mpUtils->diffDateInDays("2019-01-01", date('Y-m-d'));
-   * echo $mpUtils->diffDateInDays('first day of january', date('Y-m-d'));
-   *
-   * @param $date1
-   * @param $date2
-   * @return bool|DateInterval
-   * @throws Exception
-   */
-  public function diffDateInDays($date1, $date2) {
-    $d1 = new DateTime($date1);
-    $d2 = new DateTime($date2);
+  public function diffDateInDays($date1, $date2): bool|\DateInterval {
+    $d1 = new \DateTime($date1);
+    $d2 = new \DateTime($date2);
     $diff = $d1->diff($d2);
     return $diff->format('%r%a');
   }
 
-  /**
-   * @param $year
-   * @param $month
-   * @param $day
-   * @return array
-   * @throws \Exception
-   * @since 2.5
-   */
-  function getDaysInMonth($year, $month, $day = 'Monday') {
+  function getDaysInMonth($year, $month, $day = 'Monday'): array {
 
     $strDate = 'first ' . $day . ' of ' . $year . '-' . $month;
 
@@ -443,16 +279,7 @@ class MPUtils {
     return $days;
   }
 
-  /**
-   * @param $imgToCopy
-   * @param $dir
-   * @param $nomeFile
-   * @param $text
-   * @param string $color
-   * @param int $fontSize
-   * @param string $imageFormat
-   */
-  function duplicaConWatermark($imgToCopy, $dir, $nomeFile, $text, $color = 'black', $fontSize = 20, $imageFormat = 'png') {
+  function duplicaConWatermark($imgToCopy, $dir, $nomeFile, $text, $color = 'black', $fontSize = 20, $imageFormat = 'png'): void {
     $image = new Imagick($imgToCopy);
     $draw = new ImagickDraw();
     $draw->setFontSize($fontSize);
@@ -463,12 +290,7 @@ class MPUtils {
     $image->writeImage($dir . $nomeFile . '.' . $imageFormat);
   }
 
-  /**
-   * @param $valore
-   * @return float|int|mixed
-   * @since 2.7.8
-   */
-  public function checkDigit($valore) {
+  public function checkDigit($valore): mixed {
     $codiceControllo = 0;
     $calcolaValore = 0;
     $ultimaCifra = 0;
@@ -524,5 +346,25 @@ class MPUtils {
     $codiceControllo = $multiploSuperiore - $calcolaValore;
 
     return $codiceControllo;
+  }
+
+  public function formatDateUs($dd, $separator = '-'): string {
+    $dnExplWn = explode($separator, $dd);
+    return $dnExplWn[2] . '-' . $dnExplWn[1] . '-' . $dnExplWn[0];
+  }
+
+  public function isValidDate($date, $format = 'Y-m-d'): bool {
+    $dateTime = \DateTime::createFromFormat($format, $date);
+    return $dateTime && $dateTime->format($format) === $date;
+  }
+
+  public function creaTimeFile($file, $isFine) {
+    $timeFile = fopen($file, "a");
+    $txt = date('Y-m-d H:i:s') . "\r\n";
+    if ($isFine) {
+      $txt .= "-----\r\n";
+    }
+    fwrite($timeFile, $txt);
+    fclose($timeFile);
   }
 }

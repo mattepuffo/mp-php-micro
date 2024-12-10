@@ -1,7 +1,7 @@
 {
   "require": {
-    "firebase/php-jwt": "v6.10.1",
-    "illuminate/database": "^11.9"
+    "firebase/php-jwt": "v6.10.2",
+    "illuminate/database": "v11.34.2"
   },
   "autoload": {
     "psr-4": {

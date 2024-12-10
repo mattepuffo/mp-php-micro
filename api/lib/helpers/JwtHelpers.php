@@ -7,7 +7,7 @@ use Firebase\JWT\Key;
 
 class JwtHelpers {
 
-  public function createToken() {
+  public function createToken(): string {
     $issuedAt = time();
     $expire = $issuedAt + 60 * 60 * 24 * 60;
 
@@ -22,26 +22,30 @@ class JwtHelpers {
     return JWT::encode($token, getenv('GLOBAL_SECRET_KEY'), 'HS256');
   }
 
-  public function checkToken($authHeader) {
+  public function checkToken($authHeader): bool {
     $arr = explode(" ", $authHeader);
     $jwt = $arr[1];
 
-    if ($jwt) {
-      $token = JWT::decode($jwt, new Key(getenv('GLOBAL_SECRET_KEY'), 'HS256'));
-      $now = new \DateTimeImmutable();
+    try {
+      if ($jwt) {
+        $token = JWT::decode($jwt, new Key(getenv('GLOBAL_SECRET_KEY'), 'HS256'));
+        $now = new \DateTimeImmutable();
 
-      if ($token->iss !== getenv('SERVER_NAME') || $token->nbf > $now->getTimestamp() || $token->exp < $now->getTimestamp()) {
-        return false;
+        if ($token->iss !== getenv('SERVER_NAME') || $token->nbf > $now->getTimestamp() || $token->exp < $now->getTimestamp()) {
+          return false;
+        } else {
+          return true;
+        }
       } else {
-        return true;
+        return false;
       }
-    } else {
+    } catch (\Exception $e) {
       return false;
     }
 
   }
 
-  public function erroMessage() {
+  public function erroMessage(): false|string {
     return json_encode(array(
         "res" => "ko",
         "message" => "Accesso negato",

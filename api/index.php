@@ -27,7 +27,6 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
 }
 
 $jwtHelpers = new JwtHelpers();
-
 $controller = $_REQUEST['controller'];
 $is404 = true;
 foreach (RoutingHelpers::getControllers() as $item) {
@@ -36,6 +35,10 @@ foreach (RoutingHelpers::getControllers() as $item) {
     include_once "controllers/$item/index.php";
     break;
   }
+}
+
+if ($is404) {
+  echo RoutingHelpers::set404();
 }
 
 if ($is404) {
