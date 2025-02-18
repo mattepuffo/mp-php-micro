@@ -40,7 +40,3 @@ foreach (RoutingHelpers::getControllers() as $item) {
 if ($is404) {
   echo RoutingHelpers::set404();
 }
-
-if ($is404) {
-  echo RoutingHelpers::set404();
-}

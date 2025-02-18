@@ -6,7 +6,7 @@ class RoutingHelpers {
 
   public static function getControllers(): array {
     $root = realpath($_SERVER["DOCUMENT_ROOT"]);
-    $dir = "$root/" . getenv('CONTROLLERS_DIR');
+    $dir = "$root" . DIRECTORY_SEPARATOR . getenv('CONTROLLERS_DIR') . DIRECTORY_SEPARATOR;
     $dirs = scandir($dir);
     $controllers = array();
     foreach ($dirs as $controller) {

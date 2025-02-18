@@ -3,6 +3,7 @@
 namespace database;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Facades\DB;
 
 class EloquentInit {
 
@@ -22,6 +23,11 @@ class EloquentInit {
 
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
+
+    DB::setFacadeApplication([
+        'db' => $capsule,
+    ]);
+
   }
 
 }
