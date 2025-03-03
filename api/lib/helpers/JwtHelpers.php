@@ -16,7 +16,8 @@ class JwtHelpers {
         "aud" => getenv('AUDIENCE'),
         "iat" => $issuedAt,
         "nbf" => $issuedAt,
-        "exp" => $expire,
+//        "exp" => $expire,
+        'exp' => time() + 60,
     );
 
     return JWT::encode($token, getenv('GLOBAL_SECRET_KEY'), 'HS256');
