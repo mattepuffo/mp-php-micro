@@ -16,8 +16,8 @@ class JwtHelpers {
         "aud" => getenv('AUDIENCE'),
         "iat" => $issuedAt,
         "nbf" => $issuedAt,
-//        "exp" => $expire,
-        'exp' => time() + 60,
+        "exp" => $expire,
+//        'exp' => time() + 60,
     );
 
     return JWT::encode($token, getenv('GLOBAL_SECRET_KEY'), 'HS256');
@@ -33,14 +33,17 @@ class JwtHelpers {
         $now = new \DateTimeImmutable();
 
         if ($token->iss !== getenv('SERVER_NAME') || $token->nbf > $now->getTimestamp() || $token->exp < $now->getTimestamp()) {
+          http_response_code(401);
           return false;
         } else {
           return true;
         }
       } else {
+        http_response_code(401);
         return false;
       }
     } catch (\Exception $e) {
+      http_response_code(401);
       return false;
     }
 
