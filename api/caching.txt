@@ -1,0 +1,79 @@
+ciao!
+
+la mia è più una domanda sull'utilità della cosa che altro.
+
+in una web app, che non usa framework, sto usando un file .env
+ad ogni richiesta lo leggo e faccio una cosa del genere;
+[code]
+  $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+  foreach ($lines as $line) {
+    if (str_starts_with(trim($line), '#')) {
+      continue;
+    }
+
+    list($name, $value) = explode('=', $line, 2);
+    $name = trim($name);
+    $value = trim($value);
+
+    if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
+        putenv(sprintf('%s=%s', $name, $value));
+        $_ENV[$name] = $value;
+        $_SERVER[$name] = $value;
+
+    }
+
+  }
+[/code]
+
+secondo voi ha senso usare phpfastcache e mettere il contenuto il cache e magari leggerlo dalla cache invece che usare getenv?
+
+tipo una cosa del genere (ovviamente sistemata per renderlo usabil nell'application):
+[code]
+require 'vendor/autoload.php';
+
+use Phpfastcache\CacheManager;
+use Phpfastcache\Config\ConfigurationOption;
+
+try {
+  CacheManager::setDefaultConfig(new ConfigurationOption([
+      "path" => __DIR__ . "/cache"
+  ]));
+
+  $cacheManager = CacheManager::getInstance('files');
+  $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+  foreach ($lines as $line) {
+    if (str_starts_with(trim($line), '#')) {
+      continue;
+    }
+
+    list($name, $value) = explode('=', $line, 2);
+    $name = trim($name);
+    $value = trim($value);
+
+    if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
+      $itemValue = $cacheManager->getItem($value);
+
+      if (is_null($itemValue->get())) {
+        echo "SETTO NOME: $value<br>";
+
+        $numberOfSeconds = 60;
+        $itemValue->set($value)->expiresAfter($numberOfSeconds);
+        $cacheManager->save($itemValue);
+
+        putenv(sprintf('%s=%s', $name, $value));
+        $_ENV[$name] = $value;
+        $_SERVER[$name] = $value;
+      } else {
+        echo "VALORE IN CACHE: " . $itemValue->get() . "<br>";
+      }
+
+    }
+
+  }
+
+} catch (Exception $e) {
+  echo $e->getMessage();
+}
+[/code]
